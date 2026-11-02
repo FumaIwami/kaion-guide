@@ -1,6 +1,5 @@
 ---
 title: お金の稼ぎ方
-icon: ic_money.png
 order: 2
 status: 情報募集中
 ---

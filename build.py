@@ -145,7 +145,7 @@ a{color:var(--link)}a:hover{text-decoration:none}
 .bar{border-bottom:3px solid var(--key)}
 .bar .in{max-width:1080px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px}
 .bar a.site{color:var(--ink);text-decoration:none;font-weight:700;font-size:18px}
-.bar a.site img{width:32px;height:32px;vertical-align:middle;margin-right:6px}
+.bar a.site img{width:34px;height:34px;vertical-align:middle;margin-right:8px;border-radius:8px}
 .bar small{color:var(--muted);font-size:12px}
 .layout{max-width:1080px;margin:0 auto;padding:0 16px;display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:32px}
 .side{padding:16px 0}
@@ -173,6 +173,7 @@ ul.list a{display:flex;gap:10px;align-items:center;text-decoration:none}
 ul.list img{width:44px;height:44px;flex:none}
 ul.list b{display:block}
 ul.list span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+table.idx{width:100%}table.idx td:first-child{white-space:nowrap;font-weight:700;width:1%}
 .posts{margin-top:36px}
 .post{border:1px solid var(--line);padding:8px 12px;margin:8px 0}
 .post .meta{font-size:12px;color:var(--muted)}
@@ -218,14 +219,13 @@ def render(cfg, page, pages, posts):
     icon = page.get("icon", "")
     if page["slug"] == "index":
         items = "".join(
-            f'<li><a href="{p["slug"]}.html"><img src="assets/{p.get("icon", "")}" alt="" loading="lazy">'
-            f'<div><b>{html.escape(p["title"])}</b><span>{html.escape(first_line(p["body"]))}</span></div></a></li>'
+            f'<tr><td><a href="{p["slug"]}.html">{html.escape(p["title"])}</a></td><td>{html.escape(first_line(p["body"]))}</td></tr>'
             for p in pages if p["slug"] != "index")
         top = f'<h1>{site}</h1><img class="shot" src="assets/hero.jpg" alt="ゲーム画面">'
-        body += f'<h2>ページ一覧</h2><ul class="list">{items}</ul>'
+        body += f'<h2>ページ一覧</h2><div class="tbl"><table class="idx"><tbody>{items}</tbody></table></div>'
         crumb = ""
     else:
-        top = '<h1>' + (f'<img src="assets/{icon}" alt="">' if icon else "") + f'{html.escape(page["title"])}{st}</h1>'
+        top = f'<h1>{html.escape(page["title"])}{st}</h1>'
         crumb = f'<p class="crumb"><a href="index.html">トップ</a> &gt; {html.escape(page["title"])}</p>'
     mine = [x for x in posts if x["page"] in (page["title"], page["slug"])]
     post_html = ""
@@ -246,9 +246,9 @@ def render(cfg, page, pages, posts):
 <meta name="color-scheme" content="light">
 <title>{page_title}</title>
 <meta name="description" content="{html.escape(cfg.get("description", ""))}">
-<link rel="icon" href="assets/ic_top.png">
+<link rel="icon" href="assets/app_icon.png">
 <style>{CSS}</style></head>
-<body><div class="bar"><div class="in"><a class="site" href="index.html"><img src="assets/ic_top.png" alt="">{site}</a></div></div>
+<body><div class="bar"><div class="in"><a class="site" href="index.html"><img src="assets/app_icon.png" alt="">{site}</a></div></div>
 <div class="layout">
 <main>{crumb}{top}
 {body}

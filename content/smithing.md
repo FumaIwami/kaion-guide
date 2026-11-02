@@ -1,6 +1,5 @@
 ---
 title: 鍛冶・装備
-icon: ic_smithing.png
 order: 4
 status: 情報募集中
 ---

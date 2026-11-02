@@ -1,6 +1,5 @@
 ---
 title: 会社・株
-icon: ic_company.png
 order: 5
 status: 情報募集中
 ---

@@ -1,6 +1,5 @@
 ---
 title: 探検隊
-icon: ic_tanken.png
 order: 3
 status: 情報募集中
 ---
