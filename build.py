@@ -247,6 +247,8 @@ def render(cfg, page, pages, posts):
 <title>{page_title}</title>
 <meta name="description" content="{html.escape(cfg.get("description", ""))}">
 <link rel="icon" href="assets/app_icon.png">
+<link rel="canonical" href="{cfg.get("site_url", "")}{"" if page["slug"] == "index" else page["slug"] + ".html"}">
+<meta property="og:title" content="{page_title}"><meta property="og:type" content="website"><meta property="og:image" content="{cfg.get("site_url", "")}assets/hero.jpg">
 <style>{CSS}</style></head>
 <body><div class="bar"><div class="in"><a class="site" href="index.html"><img src="assets/app_icon.png" alt="">{site}</a></div></div>
 <div class="layout">
@@ -263,10 +265,22 @@ def main():
     cfg = load_config()
     pages = sorted((parse_page(p) for p in CONTENT.glob("*.md")), key=lambda p: (int(p["order"]), p["slug"]))
     posts = fetch_approved(cfg.get("approved_csv_url", ""))
+    # フォームの選択肢とページ名がずれた投稿(旧ページ名など)は「フリーの攻略情報」に載せる
+    known = {p["title"] for p in pages} | {p["slug"] for p in pages}
+    for x in posts:
+        if x["page"] not in known:
+            x["page"] = "free"
     OUT.mkdir(exist_ok=True)
     for page in pages:
         (OUT / f'{page["slug"]}.html').write_text(render(cfg, page, pages, posts), encoding="utf-8")
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
+    base = cfg.get("site_url", "").rstrip("/") + "/"
+    if base != "/":
+        urls = "".join(f"<url><loc>{base}{'' if p['slug'] == 'index' else p['slug'] + '.html'}</loc></url>" for p in pages)
+        (OUT / "sitemap.xml").write_text(
+            f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>',
+            encoding="utf-8")
+        (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {base}sitemap.xml\n", encoding="utf-8")
     import shutil
     if (ROOT / "assets").exists():
         shutil.copytree(ROOT / "assets", OUT / "assets", dirs_exist_ok=True)
