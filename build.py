@@ -219,7 +219,7 @@ def render(cfg, page, pages, posts):
     icon = page.get("icon", "")
     if page["slug"] == "index":
         items = "".join(
-            f'<tr><td><a href="{p["slug"]}.html">{html.escape(p["title"])}</a></td><td>{html.escape(first_line(p["body"]))}</td></tr>'
+            f'<tr><td><a href="{p["slug"]}.html">{html.escape(p["title"])}</a></td><td>{html.escape(p.get("summary") or first_line(p["body"]))}</td></tr>'
             for p in pages if p["slug"] != "index")
         top = f'<h1>{site}</h1><img class="shot" src="assets/hero.jpg" alt="ゲーム画面">'
         body += f'<h2>ページ一覧</h2><div class="tbl"><table class="idx"><tbody>{items}</tbody></table></div>'
