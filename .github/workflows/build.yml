@@ -5,6 +5,8 @@ on:
   schedule:
     - cron: "0 * * * *"   # 1 時間ごとに承認済みの投稿を取り込む
   workflow_dispatch:
+  repository_dispatch:
+    types: [approved]
 permissions:
   contents: read
   pages: write
