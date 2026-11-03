@@ -122,6 +122,18 @@ def md_to_html(md):
     return "\n".join(out)
 
 
+def qa_wrap(body):
+    """よくある質問: ### の質問ごとに枠で囲み、Q/A の印を付ける。"""
+    parts = re.split(r"(?=<h3>)", body)
+    out = [parts[0]] if not parts[0].startswith("<h3>") else []
+    for p in parts:
+        if not p.startswith("<h3>"):
+            continue
+        q, _, a = p.partition("</h3>")
+        out.append(f'<div class="qa"><h3 class="q">{q[4:]}</h3><div class="a">{a.strip()}</div></div>')
+    return "\n".join(out)
+
+
 def parse_page(path):
     text = path.read_text(encoding="utf-8")
     meta = {"slug": path.stem, "title": path.stem, "order": "99", "status": ""}
@@ -140,7 +152,7 @@ def parse_page(path):
 CSS = """
 :root{--ink:#222;--muted:#666;--line:#cfcfcf;--head:#f2f2f2;--link:#1a55a8;--key:#2f7d4f;--soft:#f7f9f6}
 *{box-sizing:border-box}
-body{margin:0;background:#fff;color:var(--ink);font:15px/1.75 -apple-system,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;-webkit-text-size-adjust:100%}
+body{margin:0;word-break:auto-phrase;line-break:strict;overflow-wrap:anywhere;background:#fff;color:var(--ink);font:15px/1.75 -apple-system,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;-webkit-text-size-adjust:100%}
 a{color:var(--link)}a:hover{text-decoration:none}
 .bar{border-bottom:3px solid var(--key)}
 .bar .in{max-width:1080px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px}
@@ -174,6 +186,12 @@ ul.list img{width:44px;height:44px;flex:none}
 ul.list b{display:block}
 ul.list span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
 table.idx{width:100%}table.idx td:first-child{white-space:nowrap;font-weight:700;width:1%}
+.qa{border:1px solid var(--line);margin:0 0 14px}
+.qa h3.q{margin:0;padding:8px 12px 8px 44px;border:0;background:#eaf4ee;color:#1d5a36;position:relative;font-size:16px}
+.qa h3.q::before{content:"Q";position:absolute;left:12px;top:7px;width:22px;height:22px;line-height:22px;text-align:center;background:var(--key);color:#fff;font-size:13px;border-radius:3px}
+.qa .a{padding:8px 12px 2px 44px;position:relative}
+.qa .a::before{content:"A";position:absolute;left:12px;top:12px;width:22px;height:22px;line-height:22px;text-align:center;background:#c0762a;color:#fff;font-size:13px;border-radius:3px}
+.qa .a p,.qa .a ul{margin:4px 0 10px}.qa .a ul{padding-left:1.2em}
 .posts{margin-top:36px}
 .post{border:1px solid var(--line);padding:8px 12px;margin:8px 0}
 .post .meta{font-size:12px;color:var(--muted)}
@@ -216,6 +234,8 @@ def render(cfg, page, pages, posts):
         for p in pages)
     st = f'<span class="st">{html.escape(page["status"])}</span>' if page["status"] else ""
     body = md_to_html(page["body"])
+    if page["slug"] == "faq":
+        body = qa_wrap(body)
     icon = page.get("icon", "")
     if page["slug"] == "index":
         items = "".join(
@@ -239,7 +259,7 @@ def render(cfg, page, pages, posts):
         btn = f'<a class="send" href="{html.escape(link)}" target="_blank" rel="noopener">このページへの情報を送る</a>' if link else ""
         post_html = (f'<section class="posts"><h2>プレイヤーからの情報</h2>'
                      f'{items or "<p>まだありません。</p>"}'
-                     f'<p class="note">送っていただいた情報は、運営が確認してから掲載します。</p>{btn}</section>')
+                     f'<p class="note">送っていただいた情報は、運営が確認の後、掲載いたします。</p>{btn}</section>')
     page_title = site if page["slug"] == "index" else f'{html.escape(page["title"])} - {site}'
     return f"""<!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
