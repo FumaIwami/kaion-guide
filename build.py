@@ -304,6 +304,8 @@ def main():
     import shutil
     if (ROOT / "assets").exists():
         shutil.copytree(ROOT / "assets", OUT / "assets", dirs_exist_ok=True)
+    if (ROOT / "static").exists():   # サイト直下に置くファイル(Search Console の確認ファイル等)
+        shutil.copytree(ROOT / "static", OUT, dirs_exist_ok=True)
     print(f"built {len(pages)} pages, {len(posts)} approved posts -> {OUT}")
 
 
