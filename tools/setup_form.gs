@@ -10,7 +10,7 @@
  * 実行後、「実行ログ」に config.json へ貼る 3 つの値が出ます。
  */
 
-const PAGES = ['はじめにやること', 'お金の稼ぎ方', '探検隊', '鍛冶・装備', '会社・株', 'ジェムの使い道'];
+const PAGES = ['はじめにやること', 'お金の稼ぎ方', '仮想通貨・株', 'よくある質問', 'フリーの攻略情報'];
 const TITLE = '会社経営オンライン 攻略ガイド 情報投稿';
 
 function setup() {
@@ -88,4 +88,13 @@ function sync() {
 function findResponseSheet_(ss) {
   const s = ss.getSheets().find(x => x.getFormUrl()) || ss.getSheets()[0];
   return s;
+}
+
+/** フォームの「ページ」の選択肢を PAGES(サイトの見出し)に合わせる。ページを増減した時に実行 */
+function updatePages() {
+  const resp = SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('RESP_ID'));
+  const form = FormApp.openByUrl(findResponseSheet_(resp).getFormUrl());
+  const item = form.getItems(FormApp.ItemType.LIST).find(x => x.getTitle() === 'ページ');
+  item.asListItem().setChoiceValues(PAGES);
+  Logger.log('更新しました: ' + PAGES.join(' / '));
 }
