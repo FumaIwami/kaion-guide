@@ -266,7 +266,7 @@ def render(cfg, page, pages, posts):
 <meta name="color-scheme" content="light">
 <title>{page_title}</title>
 <meta name="description" content="{html.escape(cfg.get("description", ""))}">
-<link rel="icon" href="assets/app_icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png"><link rel="icon" type="image/png" sizes="128x128" href="assets/app_icon.png"><link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="canonical" href="{cfg.get("site_url", "")}{"" if page["slug"] == "index" else page["slug"] + ".html"}">
 <meta property="og:title" content="{page_title}"><meta property="og:type" content="website"><meta property="og:image" content="{cfg.get("site_url", "")}assets/hero.jpg">
 <style>{CSS}</style></head>
