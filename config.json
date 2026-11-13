@@ -7,5 +7,8 @@
   "form_page_entry": "entry.1611009357",
   "approved_csv_url": "https://docs.google.com/spreadsheets/d/1uvjmjUuAs83e2QqDMr0ASkcWn-oD3X0gHL3KN1sLuf8/export?format=csv",
   "show_names": true,
+  "store_links": [
+    {"label": "ダウンロードはこちら（App Store）", "url": "https://apps.apple.com/app/id6777652102"}
+  ],
   "site_url": "https://fumaiwami.github.io/kaion-guide/"
 }

@@ -197,6 +197,9 @@ table.idx{width:100%}table.idx td:first-child{white-space:nowrap;font-weight:700
 .post .meta{font-size:12px;color:var(--muted)}
 .send{display:inline-block;margin-top:6px;padding:7px 14px;border:1px solid var(--link);color:var(--link);text-decoration:none;font-size:14px}
 .send:hover{background:#eef3fb}
+.dls{margin:0 0 14px;display:flex;flex-wrap:wrap;gap:8px}
+.dl{display:inline-block;padding:9px 18px;background:var(--key);color:#fff;text-decoration:none;font-weight:700;font-size:15px}
+.dl:hover{background:#27693f}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:12px}
 footer .in{max-width:1080px;margin:0 auto;padding:14px 16px 28px}
 @media (max-width:760px){
@@ -241,7 +244,12 @@ def render(cfg, page, pages, posts):
         items = "".join(
             f'<tr><td><a href="{p["slug"]}.html">{html.escape(p["title"])}</a></td><td>{html.escape(p.get("summary") or first_line(p["body"]))}</td></tr>'
             for p in pages if p["slug"] != "index")
-        top = f'<h1>{site}</h1><img class="shot" src="assets/hero.jpg" alt="ゲーム画面">'
+        # ストアへのリンク(config.json の store_links。Google Play を出す時は 1 行足す)
+        stores = "".join(
+            f'<a class="dl" href="{html.escape(s["url"])}" target="_blank" rel="noopener">{html.escape(s["label"])}</a>'
+            for s in cfg.get("store_links", []) if s.get("url") and s.get("label"))
+        top = (f'<h1>{site}</h1><img class="shot" src="assets/hero.jpg" alt="ゲーム画面">'
+               + (f'<p class="dls">{stores}</p>' if stores else ""))
         body += f'<h2>ページ一覧</h2><div class="tbl"><table class="idx"><tbody>{items}</tbody></table></div>'
         crumb = ""
     else:
